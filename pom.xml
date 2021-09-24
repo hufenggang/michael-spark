@@ -15,6 +15,7 @@
         <module>spark-example</module>
         <module>spark-core</module>
         <module>spark-ml</module>
+        <module>spark-app</module>
     </modules>
 
     <name>michael-spark</name>

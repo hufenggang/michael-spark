@@ -9,12 +9,27 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.michael.spark.ml</groupId>
-    <artifactId>spark-ml</artifactId>
+    <groupId>cn.michael.spark.app</groupId>
+    <artifactId>spark-app</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <dependencies>
+
+        <!--内部依赖-->
+        <dependency>
+            <groupId>cn.michael.spark</groupId>
+            <artifactId>spark-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- scala -->
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- spark -->
         <dependency>
             <groupId>org.apache.spark</groupId>
@@ -30,71 +45,46 @@
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql-kafka-0-10_${scala.binary.version}</artifactId>
+            <version>${spark.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
             <artifactId>spark-hive_${scala.binary.version}</artifactId>
             <version>${spark.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-mllib_${scala.binary.version}</artifactId>
+            <artifactId>spark-streaming_${scala.binary.version}</artifactId>
             <version>${spark.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming-kafka-0-10_${scala.binary.version}</artifactId>
+            <version>${spark.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hudi</groupId>
+            <artifactId>hudi-spark</artifactId>
+            <version>${hudi-spark.version}</version>
+        </dependency>
+
     </dependencies>
 
-    <profiles>
-        <profile>
-            <!-- 开发环境 -->
-            <id>dev</id>
-            <properties>
-                <env>dev</env>
-            </properties>
-            <activation>
-                <!-- 设置默认激活这个配置 -->
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-
-        <profile>
-            <!-- 正式环境 -->
-            <id>prod</id>
-            <properties>
-                <env>prod</env>
-            </properties>
-        </profile>
-
-        <profile>
-            <!-- beta环境 -->
-            <id>beta</id>
-            <properties>
-                <env>beta</env>
-            </properties>
-        </profile>
-
-        <profile>
-            <!-- 测试环境 -->
-            <id>test</id>
-            <properties>
-                <env>test</env>
-            </properties>
-        </profile>
-    </profiles>
-
     <build>
-        <finalName>spark-ml</finalName>
+        <finalName>spark-example</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>dev/**</exclude>
-                    <exclude>prod/**</exclude>
-                    <exclude>beta/**</exclude>
-                    <exclude>test/**</exclude>
-                </excludes>
                 <filtering>true</filtering>
             </resource>
             <resource>
-                <directory>src/main/resources/${env}</directory>
+                <directory>src/main/resources/</directory>
                 <includes>
                     <include>*.*</include>
                     <include>**/*.*</include>
@@ -113,7 +103,7 @@
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>${scala-maven-plugin.version}</version>
+                <version>4.3.0</version>
                 <executions>
                     <execution>
                         <id>scala-compile-first</id>
@@ -136,10 +126,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
+                <version>3.7.0</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
                 <executions>
                     <execution>
@@ -154,7 +144,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>${build-helper-maven-plugin.version}</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <id>add-source</id>
@@ -173,9 +163,8 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>${maven-assembly-plugin.version}</version>
+                <version>3.1.1</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
